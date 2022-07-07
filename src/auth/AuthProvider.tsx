@@ -1,46 +1,49 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-import { AuthContext as AuthContextT } from "../types/client";
+import { AuthContext as AuthContextT, User } from "../types/client";
 
-const AuthContext = createContext<AuthContextT>({
-  is: false,
-  login: async function () {},
-  logout: function () {},
-});
+const AuthContext = createContext<AuthContextT>(null!);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const auth = useAuth();
+  const [user, setUser] = useState<User>(() => {
+    const user = localStorage.getItem("user");
+    if (user) return JSON.parse(user);
+    return null;
+  });
 
-  function login() {
-    localStorage.setItem("auth", "true");
-    auth.is = true;
-    console.log("login called from authprovider");
-  }
-
-  function logout() {
-    localStorage.removeItem("auth");
-    auth.is = false;
-    console.log("logout called from authprovider");
-  }
-
-  const mem = useMemo(() => {
-    return {
-      is: false,
-      login: async function (username: string, password: string) {
-        console.log("login called");
-        await fetch("google.com");
-
-        localStorage.setItem("token", "abc");
-
-        if (localStorage.getItem("token")) this.is = true;
-      },
-      logout: function () {
-        console.log("logout called");
-        this.is = false;
-      },
+  async function login(
+    username: string,
+    password: string,
+    callback?: VoidFunction
+  ) {
+    // set token
+    console.log(
+      "fetching token from server with username:",
+      username,
+      "and password:",
+      password
+    );
+    await fetch("google.com"); // fetch token from server and set it in user object
+    const user: User = {
+      token: "abc",
+      username,
     };
-  }, [auth]);
-  return <AuthContext.Provider value={mem}>{children}</AuthContext.Provider>;
+    setUser(user);
+    const stringifed = JSON.stringify(user);
+    localStorage.setItem("user", stringifed);
+    if (callback) callback();
+  }
+
+  function logout(callback?: VoidFunction) {
+    // set token free
+    setUser(null!);
+    localStorage.removeItem("user");
+    if (callback) callback();
+  }
+
+  const value = { user, login, logout };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 function useAuth() {

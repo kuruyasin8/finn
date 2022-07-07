@@ -1,32 +1,28 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
 
-import { httpGet } from "../lib/network";
 import { Report as ReportT } from "../types/api";
+import { Report as ReportCard } from "../designs/Report";
 
 function Report() {
-  const navigate = useNavigate();
   const { id } = useParams();
 
-  const [report, setReport] = useState<ReportT>();
-
-  useEffect(function () {
-    const fetchReport = async () => httpGet("public/v2/posts/" + id);
-
-    fetchReport()
-      .then((report) => setReport(report))
-      .catch((err) => console.error(err));
-  }, []);
+  const { data, status } = useQuery<ReportT>("report", () =>
+    fetchReport(Number(id))
+  );
 
   return (
-    <>
-      <h1>{report?.title}</h1>
-      <h2>{report?.body}</h2>
-      <a onClick={() => navigate("/patients/" + report?.user_id)}>
-        go to patient
-      </a>
-    </>
+    <div>
+      <h1>{status}</h1>
+      <ReportCard {...data!} />
+    </div>
   );
+}
+
+async function fetchReport(id: number) {
+  const url = new URL("public/v2/posts" + id, window.location.origin);
+  const res = await fetch(url);
+  return res.json();
 }
 
 export { Report };

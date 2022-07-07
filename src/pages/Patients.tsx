@@ -1,44 +1,31 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { httpGet } from "../lib/network";
-import { Patient } from "../types/api";
+import { useQuery } from "react-query";
+
 import { useAuth } from "../auth/AuthProvider";
+import { Patient as PatientT } from "../types/api";
+import { Patient } from "../designs/Patient";
 
 function Patients() {
   const navigate = useNavigate();
-  const auth = useAuth();
-  const [patients, setPatients] = useState<Array<Patient>>([]);
+  const { logout } = useAuth();
 
-  useEffect(function () {
-    const fetchPatients = async () => httpGet("public/v2/users");
-
-    fetchPatients()
-      .then((patients) => setPatients(patients))
-      .catch((err) => console.error(err));
-  }, []);
+  const { data, status } = useQuery<PatientT[]>("patients", fetchPatients);
 
   return (
     <div>
-      {patients.map((patient) => {
-        return (
-          <p key={patient.id}>
-            <a onClick={() => navigate("/patients/" + patient.id)}>
-              {patient.name}
-            </a>
-            {" " + patient.gender}
-          </p>
-        );
+      <h1>{status}</h1>
+      {data?.map((patient) => {
+        return <Patient key={patient.id} {...patient} />;
       })}
-      <button
-        onClick={() => {
-          auth.logout();
-          return navigate("/");
-        }}
-      >
-        sign out
-      </button>
+      <button onClick={() => logout(() => navigate("/"))}>sign out</button>
     </div>
   );
+}
+
+async function fetchPatients() {
+  const url = new URL("public/v2/users", window.location.origin);
+  const res = await fetch(url);
+  return res.json();
 }
 
 export { Patients };

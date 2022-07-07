@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../auth/AuthProvider";
 
 function Login() {
@@ -8,8 +9,9 @@ function Login() {
     <>
       <button
         onClick={async () => {
-          await auth.login("kuruyasin", "378797Yk");
-          navigate("/");
+          await auth.login("kuruyasin8@gmail.com", "378797Yk", () =>
+            navigate("/")
+          );
         }}
         style={{ width: 70, height: 40 }}
       >

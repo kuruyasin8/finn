@@ -1,17 +1,20 @@
 type User = {
-  id: number;
+  token: string;
   username: string;
-  password: string;
 };
 
 type AuthContext = {
-  is: boolean;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => void;
+  user: User;
+  login: (
+    username: string,
+    password: string,
+    callback?: VoidFunction
+  ) => Promise<void>;
+  logout: (callback?: VoidFunction) => void;
 };
 
 type Cookie = {
   sessionId: string;
-} | null;
+};
 
 export type { Cookie, User, AuthContext };

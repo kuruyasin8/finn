@@ -1,37 +1,25 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
 
-import { httpGet } from "../lib/network";
 import { Report } from "../types/api";
+import { Report as ReportCard } from "../designs/Report";
 
 function Reports() {
-  const navigate = useNavigate();
-  const [reports, setReports] = useState<Array<Report>>([]);
-
-  useEffect(function () {
-    const fetchReports = async () => httpGet("public/v2/posts");
-
-    fetchReports()
-      .then((reports) => setReports(reports))
-      .catch((err) => console.error(err));
-  }, []);
+  const { data, status } = useQuery<Report[]>("reports", fetchReports);
 
   return (
     <div>
-      {reports.map((report) => {
-        return (
-          <>
-            <h1>
-              <a onClick={() => navigate("/reports/" + report.id)}>
-                {report.title}
-              </a>
-            </h1>
-            <h2>{report.body}</h2>
-          </>
-        );
+      <h1>{status}</h1>
+      {data?.map((report) => {
+        return <ReportCard {...report} />;
       })}
     </div>
   );
+}
+
+async function fetchReports() {
+  const url = new URL("public/v2/posts", window.location.origin);
+  const res = await fetch(url);
+  return res.json();
 }
 
 export { Reports };

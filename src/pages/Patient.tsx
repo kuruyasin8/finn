@@ -1,37 +1,28 @@
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
 
-import { httpGet } from "../lib/network";
 import { Patient as PatientT } from "../types/api";
+import { Patient as PatientCard } from "../designs/Patient";
 
 function Patient() {
   const { id } = useParams();
 
-  const [patient, setPatient] = useState<PatientT>();
-
-  useEffect(function () {
-    const fetchPatient = async () => httpGet("public/v2/users/" + id);
-
-    fetchPatient()
-      .then((patient) => setPatient(patient))
-      .catch((err) => console.error(err));
-  }, []);
+  const { data, status } = useQuery<PatientT>(["patient", id], () =>
+    fetchPatient(Number(id))
+  );
 
   return (
-    <>
-      <p>this is a profile page for {patient?.name}</p>
-      <p>gender is {patient?.gender}</p>
-      <p>email is {patient?.email}</p>
-      <p>status is {patient?.status}</p>
-    </>
+    <div>
+      <h1>{status}</h1>
+      <PatientCard {...data!} />
+    </div>
   );
 }
 
-export { Patient };
+async function fetchPatient(id: number) {
+  const url = new URL("public/v2/users/" + id, window.location.origin);
+  const res = await fetch(url);
+  return res.json();
+}
 
-// **** never define functions inside functions ***** //
-// **** this will cause function to be defined every time the component is rendered ***** //
-// function saveUserToLocalStorage(user: User | undefined) {
-//   if (user === undefined) return Error("User is undefined");
-//   localStorage.setItem("user", JSON.stringify(user));
-// }
+export { Patient };
