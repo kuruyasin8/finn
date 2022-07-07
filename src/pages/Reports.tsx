@@ -10,7 +10,7 @@ function Reports() {
     <div>
       <h1>{status}</h1>
       {data?.map((report) => {
-        return <ReportCard {...report} />;
+        return <ReportCard key={report.id} {...report} />;
       })}
     </div>
   );

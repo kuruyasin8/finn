@@ -1,5 +1,5 @@
 type User = {
-  token: string;
+  session: string;
   username: string;
 };
 
@@ -8,9 +8,9 @@ type AuthContext = {
   login: (
     username: string,
     password: string,
-    callback?: VoidFunction
+    callback: VoidFunction
   ) => Promise<void>;
-  logout: (callback?: VoidFunction) => void;
+  logout: (callback: VoidFunction) => void;
 };
 
 type Cookie = {
