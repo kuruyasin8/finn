@@ -1,19 +1,49 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { ProtectedRoute } from "./auth/ProtectedRoute";
+import { AuthProvider } from "./auth/AuthProvider";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+import { Patients, Patient, Reports, Report, Login, NotFound } from "./pages";
+
+const root = createRoot(document.getElementById("root") as HTMLElement);
+
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <StrictMode>
+    <AuthProvider>
+      <BrowserRouter>
+        <nav>
+          <Link to="/patients" style={{ margin: 3 }}>
+            Patients
+          </Link>
+          <Link to="/reports" style={{ margin: 3 }}>
+            Reports
+          </Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Navigate to="/patients" replace />} />
+          <Route
+            path="/patients"
+            element={<ProtectedRoute children={<Patients />} />}
+          />
+          <Route
+            path="/patients/:id"
+            element={<ProtectedRoute children={<Patient />} />}
+          />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/reports/:id" element={<Report />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        {/* <div
+        style={{
+          backgroundColor: "yellow",
+          width: "100%",
+        }}
+      >
+        Footer, all rights reserved
+      </div> */}
+      </BrowserRouter>
+    </AuthProvider>
+  </StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
