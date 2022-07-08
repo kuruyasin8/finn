@@ -4,7 +4,11 @@ import { AuthContext as AuthContextT, User } from "../types/client";
 
 const AuthContext = createContext<AuthContextT>(null!);
 
-function AuthProvider({ children }: { children: React.ReactNode }) {
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
+function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>(() => {
     const cookies = document.cookie.split(";");
     const session = cookies
@@ -26,7 +30,6 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     const res = await fetch(url, { method: "POST", body }); // fetch token from server and set it in user object
     if (res.ok) {
       const body = await res.json();
-      console.log(body);
       setUser(body);
     }
     callback();
@@ -39,8 +42,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const value = { user, login, logout };
+  const props = { value, children };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider {...props}></AuthContext.Provider>;
 }
 
 function useAuth() {
