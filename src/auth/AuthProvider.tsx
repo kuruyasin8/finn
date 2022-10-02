@@ -25,13 +25,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     password: string,
     callback: VoidFunction
   ) {
-    const body = JSON.stringify({ username, password });
-    // const url = new URL("public/v2/login", process.env.REACT_APP_API_URL!);
-    // const res = await fetch(url, { method: "POST", body }); // fetch token from server and set it in user object
-    // if (res.ok) {
-    //   const body = await res.json();
-    // }
-    setUser({ session: "session", username });
+    setUser({ session: "secret", username });
     callback();
   }
 

@@ -3,7 +3,7 @@ import { useAuth } from "../auth/AuthProvider";
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const auth = useAuth();
-  if (!auth.user) return <Navigate to="/login" />;
+  if (!auth.user?.session) return <Navigate to="/login" />;
   return children;
 }
 
