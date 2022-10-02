@@ -20,7 +20,7 @@ function Patient() {
 }
 
 async function fetchPatient(id: number) {
-  const url = new URL("public/v2/users/" + id, window.location.origin);
+  const url = new URL("public/v2/users/" + id, process.env.REACT_APP_API_URL!);
   const res = await fetch(url);
   return res.json();
 }

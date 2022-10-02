@@ -17,7 +17,7 @@ function Reports() {
 }
 
 async function fetchReports() {
-  const url = new URL("public/v2/posts", window.location.origin);
+  const url = new URL("public/v2/posts", process.env.REACT_APP_API_URL!);
   const res = await fetch(url);
   return res.json();
 }

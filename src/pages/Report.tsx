@@ -20,7 +20,7 @@ function Report() {
 }
 
 async function fetchReport(id: number) {
-  const url = new URL("public/v2/posts" + id, window.location.origin);
+  const url = new URL("public/v2/posts" + id, process.env.REACT_APP_API_URL!);
   const res = await fetch(url);
   return res.json();
 }

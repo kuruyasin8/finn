@@ -23,7 +23,7 @@ function Patients() {
 }
 
 async function fetchPatients() {
-  const url = new URL("public/v2/users", window.location.origin);
+  const url = new URL("public/v2/users", process.env.REACT_APP_API_URL!);
   const res = await fetch(url);
   return res.json();
 }
