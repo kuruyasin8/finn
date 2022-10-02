@@ -1,10 +1,10 @@
-interface TextField {
+interface TxtField {
   children?: React.ReactNode;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   style?: React.CSSProperties;
 }
 
-function TextField(props: TextField) {
+function TextField(props: TxtField) {
   return (
     <input
       onChange={props.onChange}

@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { useAuth } from "../auth/AuthProvider";
 import { Patient as PatientT } from "../types/api";
 import { Patient } from "../designs/Patient";
+import { Button } from "../designs";
 
 function Patients() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function Patients() {
       {data?.map((patient) => {
         return <Patient key={patient.id} {...patient} />;
       })}
-      <button onClick={() => logout(() => navigate("/"))}>sign out</button>
+      <Button onClick={() => logout(() => navigate("/"))}>sign out</Button>
     </div>
   );
 }

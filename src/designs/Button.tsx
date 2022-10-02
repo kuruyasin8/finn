@@ -1,12 +1,14 @@
-interface Button {
+import "./style.css";
+
+interface Btn {
   children?: React.ReactNode;
   style?: React.CSSProperties;
   onClick: () => void;
 }
 
-function Button(props: Button) {
+function Button(props: Btn) {
   return (
-    <button onClick={props.onClick} style={props.style}>
+    <button className="btn" onClick={props.onClick} style={props.style}>
       {props.children}
     </button>
   );
